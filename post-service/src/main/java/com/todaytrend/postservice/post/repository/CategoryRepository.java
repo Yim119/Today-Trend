@@ -20,4 +20,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long>{
     @Query(value = "SELECT c.adminCategoryId FROM Category c WHERE c.postId = :postId")
     List<Long> findAdminCategoryIdByPostId(@Param("postId") Long postId);
 
+
+
+
 }

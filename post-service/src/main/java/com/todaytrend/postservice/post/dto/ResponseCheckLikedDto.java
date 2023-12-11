@@ -1,4 +1,4 @@
-package com.todaytrend.postservice.post.dto.main;
+package com.todaytrend.postservice.post.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponsePostDto {
-    private Long postId;
-    private String postImg;
+public class ResponseCheckLikedDto {
+    private Integer likeCnt;
+    private boolean liked;
 }

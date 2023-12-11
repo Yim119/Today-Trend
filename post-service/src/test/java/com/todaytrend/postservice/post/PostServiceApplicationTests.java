@@ -130,7 +130,10 @@ class PostServiceApplicationTests {
                         .uuid("uuid100")
                 .build())).isTrue();
 
-        assertThat(postService.checkLiked("uuid100",1L)).isTrue();
+        assertThat(postService.checkLiked(RequestCheckLikedDto.builder()
+                .postId(1L)
+                .uuid("uuid100")
+                .build())).isTrue();
 
         assertThat(postService.checkLikeCnt(1L)).isEqualTo(1);
 
@@ -138,5 +141,8 @@ class PostServiceApplicationTests {
 
         assertThat(postService.userLikePost("uuid100").size()).isEqualTo(1);
     }
+
+
+
 
 }
