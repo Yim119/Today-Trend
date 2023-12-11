@@ -64,13 +64,13 @@ public class PostController {
     }
 
     //좋아요 누른 유저 리스트
-    @GetMapping("/likelist")
+    @GetMapping("/likeList")
     public ResponseEntity<?> postLikeList(@RequestHeader String postId){
         return new ResponseEntity<>(postService.postLikeList(Long.getLong(postId)),HttpStatus.OK);
     }
 
     //해당 유저가 좋아요 누른 리스트
-    @GetMapping("/likeposts")
+    @GetMapping("/likePosts")
     public ResponseEntity<?> userLikePost(@RequestHeader String UUID){
         return new ResponseEntity<>(postService.userLikePost(UUID), HttpStatus.OK);
     }
@@ -81,14 +81,14 @@ public class PostController {
     }
 
     // 게시물 상세 보기 하단 게시글 리스트
-    @GetMapping("posts/detaillist")
+    @GetMapping("posts/detailList")
     public ResponseEntity<?> recommendPostWithDetail(@RequestHeader RequestCheckLikedDto requestDto){
         return new ResponseEntity(postService.detailPostsList(requestDto), HttpStatus.OK);
     }
 
 
 //    AdminCategory 리스트 제공
-    @GetMapping("admincategorylist")
+    @GetMapping("admin-categorylist")
     public ResponseEntity<?> adminCategoryListForMain(){
         return new ResponseEntity<>(postService.findAdminCategoryList(),HttpStatus.OK);
     }
@@ -104,5 +104,7 @@ public class PostController {
     public ResponseEntity<?> chooseCategory(@RequestHeader List<Long> categoryIds){
         return new ResponseEntity<>(postService.postListCategory(categoryIds),HttpStatus.OK);
     }
+
+
 
 }
