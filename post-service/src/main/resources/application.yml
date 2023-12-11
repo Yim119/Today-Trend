@@ -1,8 +1,5 @@
 server:
-  port: 8888
-
-server1:
-  url: http://localhost:8000
+  port: 0
 
 server1:
   url: http://localhost:8000
@@ -19,7 +16,7 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true

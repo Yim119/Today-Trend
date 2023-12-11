@@ -17,5 +17,4 @@ public class responseDetailPostsDto {
     private List<Long> postIdList1;
     private List<Long> postIdList2;
     private List<selectedCategoryListDto> categoryList;
-    private String postUuid;
 }

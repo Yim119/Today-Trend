@@ -5,8 +5,6 @@ import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
-import com.todaytrend.postservice.post.dto.main.RequestTabDto;
-import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
 import com.todaytrend.postservice.post.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +73,7 @@ public class PostServiceImpl implements PostService {
         for (String nickName :checkUserTag){
             postUserTagRepo.save(PostUserTag.builder()
                     .postId(postId)
-                    .nickname("")//todo : 1-1 ) 여기에 userUuid바꾼거 넣어야함!
+                    .userUuid("")//todo : 1-1 ) 여기에 userUuid바꾼거 넣어야함!
                     .build());
         }
     }
@@ -152,7 +150,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public boolean clickLike(RequestCheckLikedDto requestCheckLikedDto) {
 
-        String userUuid = requestCheckLikedDto.getUuid();
+        String userUuid = requestCheckLikedDto.getUUID();
         Long postId = requestCheckLikedDto.getPostId();
 
         boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
@@ -174,7 +172,7 @@ public class PostServiceImpl implements PostService {
     public boolean checkLiked(RequestCheckLikedDto requestCheckLikedDto) {
         boolean checkClickLike =
                 postLikeRepo.findByUserUuidAndPostId(
-                        requestCheckLikedDto.getUuid(), requestCheckLikedDto.getPostId())
+                        requestCheckLikedDto.getUUID(), requestCheckLikedDto.getPostId())
                         != null ? true : false;
         return checkClickLike;
     }
@@ -274,19 +272,22 @@ public class PostServiceImpl implements PostService {
 //----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
-    public responseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto) {
-
-        Long postId = requestDto.getPostId();
-        String userUuid = requestDto.getUuid();
-
-        String title1 = "@Nickname 님의 게시물";
-        String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
+    public responseDetailPostsDto detailPostsList(String userUuid, Long postId) {
+        String title1 = "";
+        String title2 = "";
         List<Long> postIdList1 = new ArrayList<>();
         List<Long> postIdList2 = new ArrayList<>();
-
         Post post = postRepo.findByPostId(postId);
+        if(!userUuid.equals(postRepo.findUserUuidByPostId(postId))&&postRepo.countByUserUuid(userUuid)>0){
+            title1 = "@Nickname 님의 게시물";
+            title2 = "@Nickname 님의 게시물과 비슷한 게시물";
+            postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId));
 
-        postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId));
+        }else {
+            title1 = "추천 게시물";
+            title2 = "@Nickname님의 게시물과 비슷한 게시물";
+            postIdList1 = postRepo.findPostIdBy();
+        }
         postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
         List<selectedCategoryListDto> categoryListDtos = new ArrayList<>();
         for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
@@ -299,8 +300,8 @@ public class PostServiceImpl implements PostService {
                 .postIdList1(postIdList1)
                 .postIdList2(postIdList2)
                 .categoryList(categoryListDtos)
-                .postUuid(post.getUserUuid())
                 .build();
+
     }
 
 // ---------------- AdminCategoryList제공(main페이지에) -----------------
@@ -314,32 +315,5 @@ public class PostServiceImpl implements PostService {
         }
 
         return adminCategoryList;
-    }
-
-// -------------------/main  chooseTab 최신, 좋아요, 팔로잉 순
-
-    @Override
-    public ResponseTabDto postListTab(RequestTabDto requestTabDto) {
-        ResponseTabDto responseTabDto = new ResponseTabDto();
-        switch (requestTabDto.getTab()){
-            case 0 -> {//최신
-                responseTabDto.setPostIdList(postRepo.findPostIdBy());
-            }
-            case 1 -> {//좋아요
-                responseTabDto.setPostIdList(postLikeRepo.findPostIdBy());//todo : 중복제거
-            }
-            case 2 -> {//팔로잉
-                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
-            }
-        }
-        return responseTabDto;
-    }
-
-
-//-----------------  main 최신 + 카테고리
-
-    @Override
-    public ResponseTabDto postListCategory(List<Long> categoryIds) {
-        return new ResponseTabDto(postIdList(categoryIds));
     }
 }

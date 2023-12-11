@@ -13,12 +13,12 @@ public class PostUserTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userPostTagId;
 
-    private String nickname;
+    private String userUuid;
     private Long postId;
 
     @Builder
-    public PostUserTag(String nickname, Long postId){
-        this.nickname = nickname;
+    public PostUserTag(String userUuid, Long postId){
+        this.userUuid = userUuid;
         this.postId = postId;
     }
 
