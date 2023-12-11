@@ -289,15 +289,6 @@ public class PostServiceImpl implements PostService {
 
         postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
         postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
-
-        List<ResponsePostDto> postList1 = new ArrayList<>();
-        List<ResponsePostDto> postList2 = new ArrayList<>();
-
-        postIdList1.stream().filter(Objects::nonNull)
-                .forEach(id -> postList1.add(new ResponsePostDto(id,null)));
-        postIdList2.stream().filter(Objects::nonNull)
-                .forEach(id -> postList2.add(new ResponsePostDto(id,null)));
-
         List<selectedCategoryListDto> categoryListDtos = new ArrayList<>();
         for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
             categoryListDtos.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
@@ -306,8 +297,8 @@ public class PostServiceImpl implements PostService {
         return ResponseDetailPostsDto.builder()
                 .title1(title1)
                 .title2(title2)
-                .postList1(postList1)
-                .postList2(postList2)
+                .postIdList1(postIdList1)
+                .postIdList2(postIdList2)
                 .categoryList(categoryListDtos)
                 .postUuid(post.getUserUuid())
                 .build();
@@ -375,6 +366,8 @@ public class PostServiceImpl implements PostService {
             case 2 -> {//팔로잉
 //                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
 
+
+
             }
         }
         return responseTabDto;
@@ -385,7 +378,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseTabDto postListCategory(List<Long> categoryIds) {
-
         return new ResponseTabDto(/*postIdList(categoryIds)*/);
     }
 
