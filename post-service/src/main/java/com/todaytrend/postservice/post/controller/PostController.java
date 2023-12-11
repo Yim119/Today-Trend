@@ -85,6 +85,7 @@ public class PostController {
         return new ResponseEntity(postService.detailPostsList(requestDto), HttpStatus.OK);
     }
 
+
 //    AdminCategory 리스트 제공
     @GetMapping("admincategorylist")
     public ResponseEntity<?> adminCategoryListForMain(){
@@ -93,10 +94,8 @@ public class PostController {
 
 //     최신, 좋아요, 팔로잉 순
     @GetMapping("main")
-    public ResponseEntity<?> chooseTab(@RequestHeader RequestTabDto requestTabDto,
-                                       @RequestParam(name = "page",defaultValue = "0")Integer page,
-                                       @RequestParam(name = "size",defaultValue = "24")Integer size){
-        return new ResponseEntity<>(postService.postListTab(requestTabDto,page,size),HttpStatus.OK);
+    public ResponseEntity<?> chooseTab(@RequestHeader RequestTabDto requestTabDto){
+        return new ResponseEntity<>(postService.postListTab(requestTabDto),HttpStatus.OK);
     }
 
 //    main 최신 + 카테고리
