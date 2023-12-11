@@ -20,7 +20,7 @@ public interface PostService {
 
     ResponsePostDetailDto updatePost(Long postId , RequestUpdatePostDto requestUpdatePostDto);
 
-    ResponseDetailPostsDto detailPostsList(String uuid, Long postId);
+    ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto);
 
     //AdminCategoryList제공
     List<selectedCategoryListDto> findAdminCategoryList();
