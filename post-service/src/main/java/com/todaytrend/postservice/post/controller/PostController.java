@@ -1,7 +1,8 @@
 package com.todaytrend.postservice.post.controller;
 
-import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
-import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
+import com.todaytrend.postservice.post.dto.CRUD.requestUpdatePostDto;
+import com.todaytrend.postservice.post.dto.CRUD.responseMakePostDto;
+import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.service.PostService;
@@ -22,7 +23,7 @@ public class PostController {
 
     //게시물 생성
     @PostMapping("")
-    public ResponseEntity<?> makePost(@RequestBody ResponseMakePostDto responseMakePostDto){
+    public ResponseEntity<?> makePost(@RequestBody responseMakePostDto responseMakePostDto){
         return new ResponseEntity(postService.makePost(responseMakePostDto), HttpStatus.OK);
     }
 
@@ -58,8 +59,8 @@ public class PostController {
     
     //좋아요 개수
     @GetMapping("/likecnt")
-    public ResponseEntity<?> checkLikedCnt(@RequestParam("postId")Long postId){
-        return new ResponseEntity<>(postService.checkLikeCnt(postId),HttpStatus.OK);
+    public ResponseEntity<?> checkLikedCnt(@RequestHeader RequestCheckLikedDto requestCheckLikedDto){
+        return new ResponseEntity<>(postService.checkLikeCnt(requestCheckLikedDto),HttpStatus.OK);
     }
 
     //좋아요 누른 유저 리스트
@@ -70,12 +71,12 @@ public class PostController {
 
     //해당 유저가 좋아요 누른 리스트
     @GetMapping("/likeposts")
-    public ResponseEntity<?> userLikePost(@RequestHeader String uuid){
-        return new ResponseEntity<>(postService.userLikePost(uuid), HttpStatus.OK);
+    public ResponseEntity<?> userLikePost(@RequestHeader String UUID){
+        return new ResponseEntity<>(postService.userLikePost(UUID), HttpStatus.OK);
     }
 
     @PutMapping("")
-    public ResponseEntity<?> updatePost(@RequestParam("postId")Long postId, @RequestBody RequestUpdatePostDto requestPostDto){
+    public ResponseEntity<?> updatePost(@RequestParam("postId")Long postId, @RequestBody requestUpdatePostDto requestPostDto){
         return new ResponseEntity(postService.updatePost(postId, requestPostDto), HttpStatus.OK);
     }
 

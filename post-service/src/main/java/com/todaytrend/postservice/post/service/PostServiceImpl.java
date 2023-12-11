@@ -29,9 +29,10 @@ public class PostServiceImpl implements PostService {
     private final HashTagRepository hashTagRepo;
     private final AdminCategoryRepository adminCategoryRepo;
 
+
 //--------------------------- 포스트 생성 --------------------------------
     @Override
-    public ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto) {
+    public ResponseCreatedPostDto makePost(responseMakePostDto responseMakePostDto) {
         String userUuid = responseMakePostDto.getUuid();
 
 //        1. post생성
@@ -53,6 +54,8 @@ public class PostServiceImpl implements PostService {
         makeCategory(responseMakePostDto.getCategoryIdList(),postId);
 
         return ResponseCreatedPostDto.builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Post Insert Success")
                 .postId(post.getPostId())
                 .build();
     }
@@ -102,7 +105,8 @@ public class PostServiceImpl implements PostService {
             categoryRepo.deleteAllByPostId(postId);
             postRepo.deleteAllByPostId(postId);
             return ResponseDto.builder()
-                    .check(true)
+                    .statusCode(HttpStatus.OK.value())
+                    .message("Post Delete Success")
                     .build();
     }
 
@@ -113,6 +117,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponsePostDetailDto findPost(Long postId) {
         //todo : 1. user-server에서 데이터 받기 ( profileImage, nickName )
+
 
         //2. post불러오기 (내용, 업데이트 시간, 본인 포스트 여부)
         Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("post가 없음"));
@@ -175,8 +180,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Integer checkLikeCnt(Long postId) {
-        return postLikeRepo.countByPostId(postId).intValue();
+    public Integer checkLikeCnt(RequestCheckLikedDto requestCheckLikedDto) {
+        return postLikeRepo.countByPostId(requestCheckLikedDto.getPostId()).intValue();
     }
 
     @Override
@@ -192,7 +197,7 @@ public class PostServiceImpl implements PostService {
     //----------------------------포스트 업데이트------------------------------------
     @Override
     @Transactional
-    public ResponsePostDetailDto updatePost( Long postId, RequestUpdatePostDto requestUpdatePostDto) {
+    public ResponsePostDetailDto updatePost( Long postId, requestUpdatePostDto requestUpdatePostDto) {
 
             Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("잘못된 게시물 업데이트 요청"));
             post.updatePostContent(requestUpdatePostDto.getContent());
@@ -269,7 +274,7 @@ public class PostServiceImpl implements PostService {
 //----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
-    public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto) {
+    public responseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto) {
 
         Long postId = requestDto.getPostId();
         String userUuid = requestDto.getUuid();
@@ -281,14 +286,14 @@ public class PostServiceImpl implements PostService {
 
         Post post = postRepo.findByPostId(postId);
 
-        postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
+        postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId));
         postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
         List<selectedCategoryListDto> categoryListDtos = new ArrayList<>();
         for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
             categoryListDtos.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
         }
 
-        return ResponseDetailPostsDto.builder()
+        return responseDetailPostsDto.builder()
                 .title1(title1)
                 .title2(title2)
                 .postIdList1(postIdList1)
@@ -318,13 +323,13 @@ public class PostServiceImpl implements PostService {
         ResponseTabDto responseTabDto = new ResponseTabDto();
         switch (requestTabDto.getTab()){
             case 0 -> {//최신
-//                responseTabDto.setPostIdList(postRepo.findPostIdBy());
+                responseTabDto.setPostIdList(postRepo.findPostIdBy());
             }
             case 1 -> {//좋아요
-//                responseTabDto.setPostIdList(postLikeRepo.findPostIdBy());//todo : 중복제거
+                responseTabDto.setPostIdList(postLikeRepo.findPostIdBy());//todo : 중복제거
             }
             case 2 -> {//팔로잉
-//                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
+                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
             }
         }
         return responseTabDto;
@@ -335,6 +340,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseTabDto postListCategory(List<Long> categoryIds) {
-        return new ResponseTabDto(/*postIdList(categoryIds)*/);
+        return new ResponseTabDto(postIdList(categoryIds));
     }
 }

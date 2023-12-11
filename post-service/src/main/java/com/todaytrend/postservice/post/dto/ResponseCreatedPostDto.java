@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ResponseCreatedPostDto {
+    private Integer statusCode;
+    private String message;
     private Long postId;
 }
