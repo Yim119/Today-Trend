@@ -1,9 +1,9 @@
-package com.todaytrend.postservice.post.feign.img;
+package com.todaytrend.postservice.post.feign;
 
 import lombok.Data;
 
 @Data
-public class ImgFeignDto {
+public class UserFeignDto {
     private String profileImage;
     private String nickname;
 }

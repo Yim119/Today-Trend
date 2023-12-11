@@ -3,7 +3,6 @@ package com.todaytrend.postservice.post.controller;
 import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
-import com.todaytrend.postservice.post.dto.RequestMainDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +33,8 @@ public class PostController {
     }
 
     //게시물 상세보기
-    @GetMapping("postdetail/{postId}")
-    public ResponseEntity<?> findPost(@PathVariable("postId")Long postId){
+    @GetMapping("")
+    public ResponseEntity<?> findPost(@RequestParam("postId")Long postId){
         return new ResponseEntity(postService.findPost(postId),HttpStatus.OK);
     }
 
@@ -94,25 +93,19 @@ public class PostController {
     }
 
 //     최신, 좋아요, 팔로잉 순
-/*    @GetMapping("main")
+    @GetMapping("main")
     public ResponseEntity<?> chooseTab(@RequestParam(name = "tab")Integer tab,
                                        @RequestParam(name = "uuid")String uuid,
                                        @RequestParam(name = "page",defaultValue = "0")Integer page,
                                        @RequestParam(name = "size",defaultValue = "24")Integer size){
         return new ResponseEntity<>(postService.postListTab(tab,uuid,page,size),HttpStatus.OK);
-    }*/
-
-    /*
-    * page: number;
-  size: number;
-  categoryList?: number[];
-  uuid?: string;
-  tab?: number;*/
-    @PostMapping("main")
-    public ResponseEntity<?> chooseCategory(@RequestBody /*List<Long> categoryIds*/ RequestMainDto requestMainDto){
-        return new ResponseEntity<>(postService.postListCategory(requestMainDto),HttpStatus.OK);
     }
+
 //    main 최신 + 카테고리
+    @PostMapping("main")
+    public ResponseEntity<?> chooseCategory(@RequestBody List<Long> categoryIds){
+        return new ResponseEntity<>(postService.postListCategory(categoryIds),HttpStatus.OK);
+    }
 
 //    hashtag 검색
     @GetMapping("/hashtag/{hashtag}")

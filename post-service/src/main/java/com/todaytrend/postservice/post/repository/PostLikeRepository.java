@@ -28,6 +28,7 @@ public interface PostLikeRepository extends JpaRepository<PostLike,Long>{
     @Query("SELECT p.postId FROM PostLike p where p.userUuid = :UUID")
     List<Long> findPostIdByUserUuid(@Param("UUID") String UUID);
 
+//    @Query("SELECT p.postId FROM PostLike p")
     @Query("SELECT DISTINCT p.postId " +
             "FROM PostLike p " +
             "ORDER BY (" +
@@ -35,5 +36,5 @@ public interface PostLikeRepository extends JpaRepository<PostLike,Long>{
             "    FROM PostLike l " +
             "    WHERE l.postId = p.postId" +
             ") DESC")
-    Page<Long> findPostIdBy(PageRequest pageRequest);
+    /*List<Long>*/ Page<Long> findPostIdBy(PageRequest pageRequest);
 }
