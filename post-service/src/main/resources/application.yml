@@ -9,7 +9,6 @@ spring:
     url: jdbc:mysql://localhost:3306/todaytrend
     username: root
     password: 1234
-
   jpa:
     database: mysql
     hibernate:
@@ -20,6 +19,11 @@ spring:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 100
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
 
 logging:
   level:

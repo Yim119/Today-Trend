@@ -33,6 +33,11 @@ spring:
         predicates:
           - Path=/api/images/**
 
+      - id: notification-service
+        uri: lb://NOTIFICATION-SERVICE
+        predicates:
+          - Path=/api/notifications/**
+
 # Eureka
 eureka:
   instance:
